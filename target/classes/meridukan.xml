@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+	<db:mysql-config name="MySQL_Configuration" host="172.24.2.74"
+		port="3306" user="root" password="admin" database="polaristestdb"
+		doc:name="MySQL Configuration" />
+	<http:listener-config name="meridukan-httpListenerConfig"
+		host="0.0.0.0" port="8038" doc:name="HTTP Listener Configuration" />
+	<apikit:config name="meridukan-config" raml="meridukan.raml"
+		consoleEnabled="false" doc:name="Router" />
+	<flow name="meridukan-main">
+		<http:listener config-ref="meridukan-httpListenerConfig"
+			path="/api/*" doc:name="HTTP" />
+		<apikit:router config-ref="meridukan-config" doc:name="APIkit Router" />
+		<exception-strategy ref="meridukan-apiKitGlobalExceptionMapping"
+			doc:name="Reference Exception Strategy" />
+	</flow>
+	<flow name="meridukan-console">
+		<http:listener config-ref="meridukan-httpListenerConfig"
+			path="/console/*" doc:name="HTTP" />
+		<apikit:console config-ref="meridukan-config" doc:name="APIkit Console" />
+	</flow>
+
+	<!-- Customer Start -->
+	<flow name="get:/customers:meridukan-config">
+		<flow-ref name="getAllcustomersflow" doc:name="getAllcustomersflow" />
+	</flow>
+	<flow name="get:/customers/{customerid}:meridukan-config">
+		<flow-ref name="getcustomersByID" doc:name="getcustomersByID" />
+	</flow>
+	<flow name="post:/customers:meridukan-config">
+		<flow-ref name="addCustomersFlow" doc:name="addCustomerFlow" />
+	</flow>
+	<flow name="put:/customers/{customerid}:meridukan-config">
+		<flow-ref name="updateCustometByID" doc:name="updateCustometByID" />
+	</flow>
+	<flow name="delete:/customers/{customerid}:meridukan-config">
+		<flow-ref name="deleteCustomerByID" doc:name="deleteCustomerByID" />
+	</flow>
+	<!-- Customer End -->
+	<!-- Product Start -->
+	<flow name="get:/products:meridukan-config">
+		<flow-ref name="getAllProducts" doc:name="Flow Reference" />
+	</flow>
+	<flow name="get:/products/{productCode}:meridukan-config">
+		<flow-ref name="getProductById" doc:name="getProductById" />
+	</flow>
+	<flow name="post:/products:meridukan-config">
+		<flow-ref name="addProductsFlow" doc:name="addProductsFlow" />
+	</flow>
+	<flow name="put:/products/{productCode}:meridukan-config">
+		<flow-ref name="updateProductById" doc:name="updateProductById" />
+	</flow>
+	<flow name="delete:/products/{productCode}:meridukan-config">
+		<flow-ref name="deleteProductsById" doc:name="deleteProductsById" />
+	</flow>
+	<!-- Product End -->
+	<!-- Order and OrderDetails Start -->
+	<flow name="get:/orders:meridukan-config">
+		<flow-ref name="getOrders" doc:name="getOrders" />
+	</flow>
+	<flow name="get:/orders/{orderNumber}:meridukan-config">
+		<flow-ref name="getOrderByID" doc:name="getOrderByID" />
+	</flow>
+	<flow name="post:/orders:meridukan-config">
+		<flow-ref name="addOrdersFlow" doc:name="addOrdersFlow" />
+	</flow>
+	<flow name="put:/orders/{orderNumber}:meridukan-config">
+		<flow-ref name="updateOrderByID" doc:name="updateOrderByID" />
+	</flow>
+	<flow name="delete:/orders/{orderNumber}:meridukan-config">
+		<flow-ref name="deleteOrderByID" doc:name="deleteOrderByID" />
+	</flow>
+	<flow name="get:/orderdetails:meridukan-config">
+		<flow-ref name="getOrderDetails" doc:name="getOrderDetails" />
+	</flow>
+	<flow name="get:/orderdetails/{orderNumber}:meridukan-config">
+		<flow-ref name="getOrderDetailsByID" doc:name="getOrderDetailsByID" />
+	</flow>
+	<flow name="delete:/orderdetails/{orderNumber}:meridukan-config">
+		<flow-ref name="deleteOrderDetailsByID" doc:name="deleteOrderDetailsByID" />
+	</flow>
+	<flow name="put:/orderdetails/{orderNumber}:meridukan-config">
+		<flow-ref name="updateOrderDetailsByID" doc:name="updateOrderDetailsByID" />
+	</flow>
+
+	<flow name="post:/products/upload:multipart/form-data:meridukan-config">
+		<flow-ref name="FileUpload" doc:name="FileUpload" />
+
+	</flow>
+	<!-- Order and OrderDetails End -->
+
+	<apikit:mapping-exception-strategy
+		name="meridukan-apiKitGlobalExceptionMapping">
+		<apikit:mapping statusCode="404">
+			<apikit:exception
+				value="org.mule.module.apikit.exception.NotFoundException" />
+			<set-property propertyName="Content-Type" value="application/json"
+				doc:name="Property" />
+			<set-payload
+				value="{ &quot;message&quot;: &quot;Resource not found&quot; }"
+				doc:name="Set Payload" />
+		</apikit:mapping>
+		<apikit:mapping statusCode="405">
+			<apikit:exception
+				value="org.mule.module.apikit.exception.MethodNotAllowedException" />
+			<set-property propertyName="Content-Type" value="application/json"
+				doc:name="Property" />
+			<set-payload
+				value="{ &quot;message&quot;: &quot;Method not allowed&quot; }"
+				doc:name="Set Payload" />
+		</apikit:mapping>
+		<apikit:mapping statusCode="415">
+			<apikit:exception
+				value="org.mule.module.apikit.exception.UnsupportedMediaTypeException" />
+			<set-property propertyName="Content-Type" value="application/json"
+				doc:name="Property" />
+			<set-payload
+				value="{ &quot;message&quot;: &quot;Unsupported media type&quot; }"
+				doc:name="Set Payload" />
+		</apikit:mapping>
+		<apikit:mapping statusCode="406">
+			<apikit:exception
+				value="org.mule.module.apikit.exception.NotAcceptableException" />
+			<set-property propertyName="Content-Type" value="application/json"
+				doc:name="Property" />
+			<set-payload value="{ &quot;message&quot;: &quot;Not acceptable&quot; }"
+				doc:name="Set Payload" />
+		</apikit:mapping>
+		<apikit:mapping statusCode="400">
+			<apikit:exception
+				value="org.mule.module.apikit.exception.BadRequestException" />
+			<set-property propertyName="Content-Type" value="application/json"
+				doc:name="Property" />
+			<set-payload value="{ &quot;message&quot;: &quot;Bad request&quot; }"
+				doc:name="Set Payload" />
+		</apikit:mapping>
+	</apikit:mapping-exception-strategy>
+</mule>

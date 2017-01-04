@@ -1,0 +1,562 @@
+#%RAML 0.8
+baseUri: https://mocksvc.mulesoft.com/mocks/48078fd8-4fc3-4f2d-91f9-c3b747c6ea34
+title: Meridukan V 1.2 VirtusaPolaris
+
+/customers:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+                   {
+                    "customerNumber" : "500",
+                    "customerName" : "Charan Vaishnav",
+                    "contactLastName" : "Charan",
+                    "contactFirstName" : "Vaishnav",
+                    "phone" : "9898739484",
+                    "addressLine1" : "101,Zanda Bazar , Vadodara",
+                    "addressLine2" : "Nandera sheri ",
+                    "city" : "Vadodara",
+                    "state" : "Gujarat",
+                    "postalCode" : "391440",
+                    "country" : "India",
+                    "creditLimit" : "100000",
+                    "salesRepEmployeeNumber" : "1370"
+                    }
+  post:
+    body: 
+      application/json:
+        example: |
+                [
+                   {
+                      "customerName": "Amit Kumar",
+                      "contactFirstName": "Amit",
+                      "contactLastName": "Kumar",
+                      "phone": "8099084176",
+                      "addressLine1": "Mozeswadi",
+                      "addressLine2": "VadgaonSheri",
+                      "city": "Pune",
+                      "state": "Maharashtra",
+                      "postalCode": "410001",
+                      "country": "India"
+                   },
+                   {
+                      "customerName": "Vikas Kumar",
+                      "contactFirstName": "Vikas",
+                      "contactLastName": "Kumar",
+                      "phone": "9763213590",
+                      "addressLine1": "KrishnaNagar",
+                      "addressLine2": "Chinchwad",
+                      "city": "Pune",
+                      "state": "Maharashtra",
+                      "postalCode": "400002",
+                      "country": "India"
+                   }
+                ]
+      application/xml:
+        example: |
+          <Customers>
+            <Customer>
+              <customerNumber>10001</customerNumber>
+              <customerName>Amit Kumar</customerName>
+              <contactFirstName>Amit</contactFirstName>
+              <contactLastName>Kumar</contactLastName>
+              <phone>8099084176</phone>
+              <addressLine1>Mozeswadi</addressLine1>
+              <addressLine2>VadgaonSheri</addressLine2>
+              <city>Pune</city>
+              <state>Maharashtra</state>
+              <postalCode>410001</postalCode>
+              <country>India</country>
+              <creditLimit>1000</creditLimit>
+              <salesRepEmployeeNumber>1234</salesRepEmployeeNumber>
+            </Customer>
+            <Customer>
+              <customerNumber>10002</customerNumber>
+              <customerName>Vikas Kumar</customerName>
+              <contactFirstName>Vikas</contactFirstName>
+              <contactLastName>Kumar</contactLastName>
+              <phone>9763213590</phone>
+              <addressLine1>KrishnaNagar</addressLine1>
+              <addressLine2>Chinchwad</addressLine2>
+              <city>Pune</city>
+              <state>Maharashtra</state>
+              <postalCode>400002</postalCode>
+              <country>India</country>
+              <creditLimit>2000</creditLimit>
+              <salesRepEmployeeNumber>2234</salesRepEmployeeNumber>
+            </Customer>
+          </Customers>
+    responses: 
+      200:
+        description: The customer has been properly entered
+        body: 
+          application/json:
+            example: |
+              {"message":"The customer has been properly entered"}
+                          
+          
+  /{customerid}:
+      uriParameters: 
+        customerid: 
+          type: integer
+          displayName: customerid
+          required: true
+          description: Return data of customer from given customerid
+          example: 100
+      get:
+       description: Get Specific customer by id
+       responses:
+         200:
+           body: 
+             application/json:
+               example: |
+                 {
+                  "customerName" : "Charan Vaishnav",
+                  "contactLastName" : "Charan",
+                  "contactFirstName" : "Vaishnav",
+                  "phone" : "9898739484",
+                  "addressLine1" : "101,Zanda Bazar , Vadodara",
+                  "addressLine2" : "Nandera sheri ",
+                  "city" : "Vadodara",
+                  "state" : "Gujarat",
+                  "postalCode" : "391440",
+                  "country" : "India",
+                  "creditLimit" : "100000",
+                  "salesRepEmployeeNumber" : "1370"
+                  }               
+           
+      put:
+       description: update specific customer by id
+       body: 
+         application/json:
+           example: |
+             {
+              "customerName" : "Charan3 Vaishnav3",
+              "contactLastName" : "Charan3",
+              "contactFirstName" : "Vaishnav3",
+              "phone" : "9898739484",
+              "addressLine1" : "101,Zanda Bazar , Vadodara",
+              "addressLine2" : "Nandera sheri ",
+              "city" : "Vadodara",
+              "state" : "Gujarat",
+              "postalCode" : "391440",
+              "country" : "India",
+              "creditLimit" : "100000",
+              "salesRepEmployeeNumber" : "1370"
+              }
+       responses: 
+        200:
+         description: update specific customer by i
+         body: 
+           application/text:
+            example: |
+              {"message":"The customer has been updated successfully"}
+      
+      delete:
+        description: delete specific customer by id
+        responses: 
+          200:
+            body: 
+              application/json:
+                example: |
+                  {"message" : "Customer deleted sucessfully"}
+/products:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+              "productCode" : "S100_1947",
+              "productName" : "1970 Harley Davidson Ultimate Chopper",
+              "productLine" : "Motorcycles",
+              "productScale" : "1:10",
+              "productVendor" : "Min Lin Diecast",
+              "productDescription" : "This replica features working kickstand, front suspension etc.",
+              "quantityInStock" : "7933",
+              "buyPrice" : "48.81",
+              "MSRP" : "95.70"
+              }
+  post:
+    body: 
+      application/json:
+        example: |
+          [
+             {
+                "productCode": "S10_1678",
+                "productName": "1969 Harley Davidson Ultimate Chopper",
+                "productLine": "Motorcycles",
+                "productScale": "1:10",
+                "productVendor": "Min Lin Diecast",
+                "productDescription": "Features having kickstand, front suspension etc.",
+                "quantityInStock": "7933",
+                "buyPrice": "48.81",
+                "MSRP": "95.70"
+             },
+             {
+                "productCode": "S10_1949",
+                "productName": "1952 Alpine Renault 1300",
+                "productLine": "Classic Cars",
+                "productScale": "1:10",
+                "productVendor": "Classic Metal Creations",
+                "productDescription": "Turnable front wheels; steering function.",
+                "quantityInStock": "7305",
+                "buyPrice": "98.58",
+                "MSRP": "214.30"
+             }
+          ]
+      application/xml:
+        example: |
+          <Products>
+              <Product>
+              <productCode>S10_1678</productCode>
+              <productName>1969 Harley Davidson Ultimate Chopper</productName>
+              <productLine>Motorcycles</productLine>
+              <productScale>1:10</productScale>
+              <productVendor>Min Lin Diecast</productVendor>
+              <productDescription>Features having kickstand, front suspension etc.</productDescription>
+              <quantityInStock>7933</quantityInStock>
+              <buyPrice>48.81</buyPrice>
+              <MSRP>95.70</MSRP>
+              </Product>
+              <Product>
+                <productCode>S10_1949</productCode>
+              <productName>1952 Alpine Renault 1300</productName>
+              <productLine>Classic Cars</productLine>
+              <productScale>1:10</productScale>
+              <productVendor>Classic Metal Creations</productVendor>
+              <productDescription>Turnable front wheels; steering function.</productDescription>
+              <quantityInStock>7305</quantityInStock>
+              <buyPrice>98.58</buyPrice>
+              <MSRP>214.30</MSRP>
+              </Product>
+            </Products>
+    responses: 
+      200:
+        description: Insert specific product by id
+        body: 
+          application/text:
+            example: |
+              {"message":"The product has been properly entered"}
+                          
+  /{productCode}:
+      uriParameters: 
+        productCode: 
+          type: string
+          displayName: productCode
+          required: true
+          description: Return data of product from given productCode
+          example: 100
+      get:
+       description: Get Specific product by id
+       responses:
+         200:
+           body: 
+             application/json:
+               example: |
+                 {
+                  "productCode" : "S100_1947",
+                  "productName" : "1970 Harley Davidson Ultimate Chopper",
+                  "productLine" : "Motorcycles",
+                  "productScale" : "1:10",
+                  "productVendor" : "Min Lin Diecast",
+                  "productDescription" : "This replica features working kickstand, front suspension etc.",
+                  "quantityInStock" : "7933",
+                  "buyPrice" : "48.81",
+                  "MSRP" : "95.70"
+                  }               
+           
+      put:
+       description: update specific product by id
+       body: 
+         application/json:
+           example: |
+             {
+              "productName" : "1970 Harley Davidson Ultimate Chopper",
+              "productLine" : "Motorcycles",
+              "productScale" : "1:10",
+              "productVendor" : "Min Lin Diecast",
+              "productDescription" : "This replica features working kickstand, front suspension etc.",
+              "quantityInStock" : "7933",
+              "buyPrice" : "48.81",
+              "MSRP" : "95.70"
+              }
+       responses: 
+        200:
+         description: update specific product by id
+         body: 
+           application/text:
+            example: |
+              {"message":"The product has been updated successfully"}
+      delete:
+        description: delete specific product by id
+        responses: 
+          200:
+            body: 
+              application/json:
+                example: |
+                  {"message" : "Product deleted sucessfully"}
+  /upload:
+    post:
+      body:
+        binary/octet-stream: 
+        multipart/form-data:
+          formParameters:
+            file:
+             displayName: Please Upload the Products File.
+             required: true
+             type: file                  
+/orders:
+  get:
+    description: Get all orders
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+              "orderNumber" : 100,
+              "orderDate" : "2003-01-06",
+              "requiredDate" : "2003-01-09",
+              "shippedDate" : "2003-01-10",
+              "status" : "Shipped",
+              "comments" : "Use the tracking id for tracking purpose",
+              "customerNumber" : 101
+              }
+  post:
+    body: 
+      application/json:
+        example: |
+         [
+             {
+                "orderDate": "2016-12-31",
+                "requiredDate": "2016-12-31",
+                "shippedDate": "2016-12-31",
+                "status": "Shipped",
+                "comments": "Shipped will be on 31st DEC",
+                "customerNumber": "103",
+                "orderDetails": [
+                   {
+                      "productCode": "S10_1678",
+                      "quantityOrdered": "10",
+                      "priceEach": "10.88",
+                      "orderLineNumber": "100"
+                   },
+                   {
+                      "productCode": "S10_1980",
+                      "quantityOrdered": "20",
+                      "priceEach": "20.88",
+                      "orderLineNumber": "200"
+                   }
+                ]
+             },
+             {
+                "orderDate": "2016-12-30",
+                "requiredDate": "2016-12-30",
+                "shippedDate": "2016-12-30",
+                "status": "Shipped",
+                "comments": "Shipped on 30th DEC",
+                "customerNumber": "103",
+                "orderDetails": [
+                   {
+                      "productCode": "S10_1678",
+                      "quantityOrdered": "30",
+                      "priceEach": "30.88",
+                      "orderLineNumber": "300"
+                   },
+                   {
+                      "productCode": "S10_1980",
+                      "quantityOrdered": "40",
+                      "priceEach": "40.88",
+                      "orderLineNumber": "400"
+                   }
+                ]
+             }
+          ]
+      application/xml:
+        example: |
+          <Orders>
+            <Order>
+              <orderDate>2016-12-31</orderDate>
+            <requiredDate>2016-12-31</requiredDate>
+            <shippedDate>2016-12-31</shippedDate>
+            <status>Shipped</status>
+            <comments>Shipped will be on 31st DEC</comments>
+            <customerNumber>103</customerNumber>
+            <orderDetails>
+               <orderDetail>
+                 <productCode>S10_1678</productCode>
+               <quantityOrdered>10</quantityOrdered>
+               <priceEach>10.88</priceEach>
+               <orderLineNumber>100</orderLineNumber>
+               </orderDetail>
+               <orderDetail>
+                 <productCode>S10_1980</productCode>
+               <quantityOrdered>20</quantityOrdered>
+               <priceEach>20.88</priceEach>
+               <orderLineNumber>200</orderLineNumber>
+               </orderDetail>
+            </orderDetails>
+             </Order>
+              <Order>
+              <orderDate>2016-12-30</orderDate>
+            <requiredDate>2016-12-30</requiredDate>
+            <shippedDate>2016-12-30</shippedDate>
+            <status>Shipped</status>
+            <comments>Shipped on 30th DEC</comments>
+            <customerNumber>103</customerNumber>
+            <orderDetails>
+               <orderDetail>
+                 <productCode>S10_1678</productCode>
+               <quantityOrdered>30</quantityOrdered>
+               <priceEach>30.88</priceEach>
+               <orderLineNumber>300</orderLineNumber>
+               </orderDetail>
+               <orderDetail>
+                 <productCode>S10_1980</productCode>
+               <quantityOrdered>40</quantityOrdered>
+               <priceEach>40.88</priceEach>
+               <orderLineNumber>400</orderLineNumber>
+               </orderDetail>
+            </orderDetails>
+             </Order>
+          </Orders>
+    responses: 
+      200:
+        description: Response from Order Posting
+        body: 
+          application/text:
+            example: |
+              {"message":"The order has been placed successfully"}
+  /{orderNumber}:
+      uriParameters: 
+        orderNumber: 
+          type: integer
+          displayName: orderNumber
+          required: true
+          description: Provide the orderNumber
+          example: 100
+      get:
+       description: Get the order details for the given OrderNumber
+       responses:
+         200:
+           body: 
+             application/json:
+               example: |
+                 {
+                  "orderNumber" : 10,
+                  "orderDate" : "2003-01-06",
+                  "requiredDate" : "2003-01-09",
+                  "shippedDate" : "2003-01-10",
+                  "status" : "Shipped",
+                  "comments" : "Use the tracking id for tracking purpose",
+                  "customerNumber" : 101
+                  }               
+           
+      put:
+       description: Update the order details by for the given OrderNumber
+       body: 
+         application/json:
+           example: |
+             {
+              "orderDate" : "2003-01-06",
+              "requiredDate" : "2003-01-09",
+              "shippedDate" : "2003-01-10",
+              "status" : "Shipped",
+              "comments" : "Use the tracking id for tracking purpose",
+              "customerNumber" : 101
+              }
+       responses: 
+        200:
+         description: Response from Order with orderNumber update
+         body: 
+           application/text:
+            example: |
+              {"message":"The order has been updated successfully"}
+      delete:
+        description: Delete the order for the given OrderNumber
+        responses: 
+          200:
+            body: 
+              application/json:
+                example: |
+                  {"message" : "Order deleted sucessfully"}
+/orderdetails:
+  get:
+    description: Get all orderdetails
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+              "orderNumber" : 100,
+              "productCode" : "S10_2016",
+              "quantityOrdered" : 30,
+              "priceEach" : 56.09,
+              "orderLineNumber" : 2
+              }
+  /{orderNumber}:
+      uriParameters: 
+        orderNumber: 
+          type: integer
+          displayName: orderNumber
+          required: true
+          description: Provide the orderNumber
+          example: 100
+      get:
+       description: Get the order details for the given OrderNumber
+       responses:
+         200:
+           body: 
+             application/json:
+               example: |
+                 {
+                  "orderNumber" : 100,
+                  "productCode" : "S10_2016",
+                  "quantityOrdered" : 30,
+                  "priceEach" : 56.09,
+                  "orderLineNumber" : 2
+                  }
+      put:
+       queryParameters:
+         productCode:
+          displayName: productCode
+          type: string
+          description: Product's productCode
+          example: "S10_1949"
+          required: true 
+       description: Update the order details by for the given OrderNumber and productCode
+       body: 
+         application/json:
+           example: |
+             {
+              "quantityOrdered" : 30,
+              "priceEach" : 56.09,
+              "orderLineNumber" : 2
+              }
+       responses: 
+        200:
+         description: Response from Orderdetails with orderNumber update
+         body: 
+           application/text:
+            example: |
+              {"message":"The orderdetails has been updated successfully"}
+      delete:
+       queryParameters:
+          productCode:
+           displayName: productCode
+           type: string
+           description: Product's productCode
+           example: "S10_1949"
+           required: true
+       description: Delete the orderdetails for the given OrderNumber and ProductCode
+       responses: 
+          200:
+            body: 
+              application/json:
+                example: |
+                  {"message" : "Orderdetails deleted sucessfully"}

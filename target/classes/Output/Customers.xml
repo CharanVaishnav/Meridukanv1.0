@@ -1,0 +1,41 @@
+<Customers>
+	<Customer>
+		<customerNumber>10001</customerNumber>
+		<customerName>Amit Kumar</customerName>
+		<contactFirstName>Amit</contactFirstName>
+		<contactLastName>Kumar</contactLastName>
+		<phone>8099084176</phone>
+		<addressLine1>Mozeswadi</addressLine1>
+		<addressLine2>VadgaonSheri</addressLine2>
+		<city>Pune</city>
+		<state>Maharashtra</state>
+		<postalCode>410001</postalCode>
+		<country>India</country>
+	</Customer>
+	<Customer>
+		<customerNumber>10002</customerNumber>
+		<customerName>Vikas Kumar</customerName>
+		<contactFirstName>Vikas</contactFirstName>
+		<contactLastName>Kumar</contactLastName>
+		<phone>9763213590</phone>
+		<addressLine1>KrishnaNagar</addressLine1>
+		<addressLine2>Chinchwad</addressLine2>
+		<city>Pune</city>
+		<state>Maharashtra</state>
+		<postalCode>400002</postalCode>
+		<country>India</country>
+	</Customer>
+	<Customer>
+		<customerNumber>10003</customerNumber>
+		<customerName>Alka Singh</customerName>
+		<contactFirstName>Alka</contactFirstName>
+		<contactLastName>Singh</contactLastName>
+		<phone>9763213590</phone>
+		<addressLine1>KrishnaNagar</addressLine1>
+		<addressLine2>Chinchwad</addressLine2>
+		<city>Pakur</city>
+		<state>Jharkhand</state>
+		<postalCode>400002</postalCode>
+		<country>India</country>
+	</Customer>
+</Customers>

@@ -1,0 +1,30 @@
+<Customers>
+	<Customer>
+		<customerName>Amit Kumar</customerName>
+		<contactFirstName>Amit</contactFirstName>
+		<contactLastName>Kumar</contactLastName>
+		<phone>8099084176</phone>
+		<addressLine1>Mozeswadi</addressLine1>
+		<addressLine2>VadgaonSheri</addressLine2>
+		<city>Pune</city>
+		<state>Maharashtra</state>
+		<postalCode>410001</postalCode>
+		<country>India</country>
+		<creditLimit>10000</creditLimit>
+		<salesRepEmployeeNumber>101</salesRepEmployeeNumber>
+	</Customer>
+	<Customer>
+		<customerName>Vikas Kumar</customerName>
+		<contactFirstName>Vikas</contactFirstName>
+		<contactLastName>Kumar</contactLastName>
+		<phone>9763213590</phone>
+		<addressLine1>KrishnaNagar</addressLine1>
+		<addressLine2>Chinchwad</addressLine2>
+		<city>Pune</city>
+		<state>Maharashtra</state>
+		<postalCode>400002</postalCode>
+		<country>India</country>
+		<creditLimit>20000</creditLimit>
+		<salesRepEmployeeNumber>102</salesRepEmployeeNumber>
+	</Customer>
+</Customers>

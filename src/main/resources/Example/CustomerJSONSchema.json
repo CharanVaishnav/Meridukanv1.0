@@ -1,0 +1,30 @@
+[
+   {
+      "customerName": "Amit Kumar",
+      "contactFirstName": "Amit",
+      "contactLastName": "Kumar",
+      "phone": "8099084176",
+      "addressLine1": "Mozeswadi",
+      "addressLine2": "VadgaonSheri",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "postalCode": 410001,
+      "country": "India",
+      "creditLimit": 100000,
+      "salesRepEmployeeNumber": 101
+   },
+   {
+      "customerName": "Vikas Kumar",
+      "contactFirstName": "Vikas",
+      "contactLastName": "Kumar",
+      "phone": "9763213590",
+      "addressLine1": "KrishnaNagar",
+      "addressLine2": "Chinchwad",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "postalCode": 400002,
+      "country": "India",
+      "creditLimit": 200000,
+      "salesRepEmployeeNumber": 102
+   }
+]

@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<validation:config name="Validation_Configuration"
+		doc:name="Validation Configuration" />
+
+	<flow name="updateOrderByID">
+		<json:json-to-object-transformer
+			returnClass="java.util.HashMap" doc:name="JSON to Object" />
+		<set-variable variableName="OrderId"
+			value="#[message.inboundProperties.'http.uri.params'.orderNumber]"
+			doc:name="Set OrderNumber" />
+		<db:update config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[Update orders set orderDate = #[payload.orderDate],requiredDate = #[payload.requiredDate],shippedDate = #[payload.shippedDate],
+status = #[payload.status],comments = #[payload.comments],customerNumber = #[payload.customerNumber] where orderNumber = #[flowVars.OrderId];]]></db:parameterized-query>
+
+		</db:update>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=(payload!=0  ? "OrderNumber:"+flowVars.OrderId+" has been updated":"OrderNumber:"+flowVars.OrderId+" does not exist")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;updateOrderByID&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+
+
+	<flow name="updateOrderDetailsByID">
+		<json:json-to-object-transformer
+			returnClass="java.util.HashMap" doc:name="JSON to Object" />
+		<set-variable variableName="OrderId"
+			value="#[message.inboundProperties.'http.uri.params'.orderNumber]"
+			doc:name="Set OrderNumber" />
+		<set-variable variableName="ProductCode"
+			value="#[message.inboundProperties.'http.query.params'.productCode]"
+			doc:name="Set Product Code" />
+		<db:update config-ref="MySQL_Configuration" doc:name="Database">
+			<db:parameterized-query><![CDATA[Update orderdetails set quantityOrdered = #[payload.quantityOrdered],priceEach = #[payload.priceEach],orderLineNumber = #[payload.orderLineNumber] where (orderNumber = #[flowVars.OrderId] and productCode = #[flowVars.ProductCode]);]]></db:parameterized-query>
+		</db:update>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=(payload !=0 ? "OrderNumber:"+flowVars.OrderId+ " with ProductCode:" +flowVars.ProductCode+ " has been updated":"OrderNumber:"+flowVars.OrderId+ " or ProductCode:"+flowVars.ProductCode +" does not exist")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;updateOrderDetailsByID&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+
+
+	<flow name="deleteOrderByID">
+		<set-variable variableName="OrderId"
+			value="#[message.inboundProperties.'http.uri.params'.orderNumber]"
+			doc:name="Set Order Number" />
+		<db:bulk-execute config-ref="MySQL_Configuration"
+			doc:name="Database"><![CDATA[update orderdetails set deleteStatus=0 where orderNumber=#[flowVars.OrderId];
+update orders set deletestatus=0 where orderNumber=#[flowVars.OrderId];
+]]></db:bulk-execute>
+        <json:object-to-json-transformer doc:name="Object to JSON"/>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=(payload.charAt(1)!=0 ? "OrderNumber:"+flowVars.OrderId+" has been deleted":"OrderNumber:"+flowVars.OrderId+" does not exist")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;deleteOrderByID&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+
+
+	<flow name="deleteOrderDetailsByID">
+		<set-variable variableName="OrderId"
+			value="#[message.inboundProperties.'http.uri.params'.orderNumber]"
+			doc:name="Set Order Number" />
+		<set-variable variableName="productID"
+			value="#[message.inboundProperties.'http.query.params'.productCode]"
+			doc:name="Set Product Code" />
+		<db:update config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[update orderdetails set deleteStatus=0 where orderdetails.orderNumber = #[flowVars.OrderId] AND orderdetails.productCode = #[flowVars.productID];]]></db:parameterized-query>
+		</db:update>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=(payload !=0 ? "OrderNumber:"+flowVars.OrderId+ " with ProductCode:" +flowVars.productID+ " has been deleted":"OrderNumber:"+flowVars.OrderId+ " or ProductCode:"+flowVars.productID +" does not exist")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;deleteOrderDetailsByID&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+
+
+	<flow name="getOrderDetails">
+		<db:select config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[SELECT orderNumber,productCode,quantityOrdered,priceEach,orderLineNumber FROM orderdetails where deleteStatus=1;]]></db:parameterized-query>
+
+		</db:select>
+        <dw:transform-message metadata:id="ce6b9074-7988-4d31-9807-01258961194b" doc:name="Transform Message">
+            <dw:input-payload doc:sample="sample_data\list_map.dwl"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	orderdetails: payload map ((payload01 , indexOfPayload01) -> {
+		orderLineNumber: payload01.orderLineNumber as :number,
+		orderNumber: payload01.orderNumber,
+		priceEach: payload01.priceEach as :number,
+		productCode: payload01.productCode,
+		quantityOrdered: payload01.quantityOrdered
+	})
+} as :object {
+	class : "com.meridukanorder.OrderDetailsArray"
+}]]></dw:set-payload>
+        </dw:transform-message>
+
+        <custom-transformer class="com.meridukanorder.OrderDetailsSortTransformer" doc:name="Java"/>
+		<json:object-to-json-transformer
+			doc:name="Object to JSON" />
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((payload.length()>2) ? payload :"No record found!!")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;getOrderDetails&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+
+
+	<flow name="getOrders">
+		<db:select config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[Select orderNumber,orderDate,requiredDate,shippedDate,status,comments,customerNumber from orders where deleteStatus=1;]]></db:parameterized-query>
+
+		</db:select>
+		<dw:transform-message metadata:id="420941ea-f791-43c9-b1b5-3a602da27400"
+			doc:name="Transform Message">
+			<dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	orders: payload map ((payload01 , indexOfPayload01) -> {
+		comments: payload01.comments as :string default "",
+		customerNumber: payload01.customerNumber default "",
+		orderDate: payload01.orderDate as :string default "",
+		orderNumber: payload01.orderNumber,
+		requiredDate: payload01.requiredDate as :string default "",
+		shippedDate: payload01.shippedDate as :string default "",
+		status: payload01.status default ""
+	})
+} as :object {
+	class : "com.meridukanorder.OrderArray"
+}]]></dw:set-payload>
+		</dw:transform-message>
+		<custom-transformer class="com.meridukanorder.OrderSortTransformer"
+			doc:name="Java" />
+		<json:object-to-json-transformer
+			doc:name="Object to JSON" />
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((payload.length()>2) ? payload :"No record found!!")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload value="Exception rasied in &quot;getOrders&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+
+
+	<flow name="getOrderByID">
+		<set-variable variableName="OrderId"
+			value="#[message.inboundProperties.'http.uri.params'.orderNumber]"
+			doc:name="Set OrderNumber" />
+		<db:select config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[Select orderNumber,orderDate,requiredDate,shippedDate,status,comments,customerNumber from orders where orderNumber = #[flowVars.OrderId] and deleteStatus=1;]]></db:parameterized-query>
+
+		</db:select>
+		<json:object-to-json-transformer
+			doc:name="Object to JSON" />
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((payload.length()>2) ? payload : "OrderNumber:"+flowVars.OrderId+" does not exist")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;getOrderByID&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+
+
+	<flow name="getOrderDetailsByID">
+		<set-variable variableName="OrderId"
+			value="#[message.inboundProperties.'http.uri.params'.orderNumber]"
+			doc:name="Set OrderNumber" />
+		<db:select config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[Select orderNumber,productCode,quantityOrdered,priceEach,orderLineNumber from orderdetails where orderNumber = #[flowVars.OrderId] and deleteStatus=1;]]></db:parameterized-query>
+
+		</db:select>
+		<json:object-to-json-transformer
+			doc:name="Object to JSON" />
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((payload.length()>2) ? payload : "OrderNumber:"+flowVars.OrderId+" does not exist")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;getOrderDetailsByID&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+
+
+	<!-- <flow name="insertOrderDetails" initialState="stopped">
+		<json:json-to-object-transformer
+			returnClass="java.util.HashMap" doc:name="JSON to Object" />
+		<db:insert config-ref="MySQL_Configuration" doc:name="Database">
+			<db:parameterized-query><![CDATA[Insert into orderdetails(orderNumber,productCode,quantityOrdered,priceEach,orderLineNumber,deleteStatus) values(#[payload.orderNumber],#[payload.productCode],#[payload.quantityOrdered],#[payload.priceEach],#[payload.orderLineNumber],1);]]></db:parameterized-query>
+		</db:insert>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((payload.length()>2) ? "OrderDetails has been posted successfully" :"OrderDetails has not been posted successfully" )]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;insertOrder&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>-->
+
+
+	<flow name="insertOrder">
+		<json:json-to-object-transformer
+			returnClass="java.util.HashMap" doc:name="JSON to Object" />
+		<set-variable variableName="info" value="#[payload]"
+			doc:name="Set Payload Variable" />
+        <set-session-variable variableName="insertCounter" value="#[0]" doc:name="Session Counter Variable"/>
+		<ee:multi-transactional action="ALWAYS_BEGIN"
+			doc:name="Transaction for Order and OrderDetails">
+			<db:insert config-ref="MySQL_Configuration" doc:name="Insert Into Order" transactionalAction="ALWAYS_JOIN">
+                <db:parameterized-query><![CDATA[Insert into orders(orderDate,requiredDate,shippedDate,status,comments,customerNumber,deleteStatus) values 
+(#[payload.orderDate],#[payload.requiredDate],#[payload.shippedDate],#[payload.status],#[payload.comments],#[payload.customerNumber],1);]]></db:parameterized-query>
+
+			</db:insert>
+			<set-payload value="#[flowVars.info]" doc:name="Set Payload" />
+            <foreach collection="#[payload.orderDetails]" counterVariableName="Counter" doc:name="For Each for OrderDetails">
+                <db:insert config-ref="MySQL_Configuration" transactionalAction="ALWAYS_JOIN" doc:name="Insert Into OrderDetails">
+                    <db:parameterized-query><![CDATA[Insert into orderdetails(orderNumber,productCode,quantityOrdered,priceEach,orderLineNumber,deleteStatus) values((Select max(orderNumber) from orders),#[payload.productCode],#[payload.quantityOrdered],#[payload.priceEach],#[payload.orderLineNumber],1);]]></db:parameterized-query>
+                </db:insert>
+                <expression-component doc:name="Expression"><![CDATA[#[sessionVars.insertCounter = sessionVars.insertCounter+1]]]></expression-component>
+            </foreach>
+
+			<rollback-exception-strategy doc:name="Rollback Exception Strategy">
+				<logger message="Insertion Failed into Database...................."
+					level="INFO" doc:name="Logger" />
+				<on-redelivery-attempts-exceeded>
+					<logger message="Insertion process exhausetd......................."
+						level="INFO" doc:name="Logger" />
+				</on-redelivery-attempts-exceeded>
+			</rollback-exception-strategy>
+		</ee:multi-transactional>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((sessionVars.insertCounter>0) ? "Order has been posted successfully" :"Order has not been posted successfully" )]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;insertOrder&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+	
+	<flow name="addOrdersFlow" processingStrategy="synchronous">
+		<choice doc:name="Choice" tracking:enable-default-events="true">
+			<when
+				expression="#[message.inboundProperties['Content-Type'].equals(&quot;application/xml&quot;)]">
+				<dw:transform-message metadata:id="57aff980-a7cb-4ae1-a814-38a24be64a61"
+					doc:name="Transform Message">
+					<dw:input-payload doc:sample="ExampleFile\OrderXMLScehma.xml"
+						mimeType="application/xml" />
+					<dw:set-payload resource="classpath:OrderXMLToJSON.dwl" />
+				</dw:transform-message>
+			</when>
+			<when
+				expression="#[message.inboundProperties['Content-Type'].equals(&quot;application/json&quot;)]">
+				<dw:transform-message metadata:id="85e47aed-9ff3-405a-8817-80ef2b732c84"
+					doc:name="Transform Message">
+					<dw:input-payload doc:sample="ExampleFile\OrderJSONScehma.json"
+						mimeType="application/json" />
+					<dw:set-payload resource="classpath:OrderJSONToJSON.dwl" />
+				</dw:transform-message>
+			</when>
+			<otherwise>
+				<logger message="Only XML and JSON Data Accepted........"
+					level="INFO" doc:name="Logger" />
+			</otherwise>
+		</choice>
+		<foreach collection="#[payload]" doc:name="For Each">
+			<json:object-to-json-transformer
+				doc:name="Object to JSON" />
+			<flow-ref name="insertOrder" doc:name="insertOrder" />
+		</foreach>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((sessionVars.insertCounter>0) ? "Order has been posted successfully" :"Order has not been posted successfully" )]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<choice-exception-strategy doc:name="Choice Exception Strategy">
+			<catch-exception-strategy doc:name="SQL Exception"
+				when="exception.causedBy(java.sql.SQLException)">
+				<set-payload value="SQL Exception raised in addOrdersFlow!!!!"
+					doc:name="Set Payload" />
+			</catch-exception-strategy>
+			<catch-exception-strategy doc:name="Catch All Exceptions">
+				<set-payload
+					value="Exception rasied in &quot;addOrdersFlow&quot; flow !!!!!!"
+					doc:name="Set Payload" />
+			</catch-exception-strategy>
+		</choice-exception-strategy>
+	</flow>
+	
+
+</mule>

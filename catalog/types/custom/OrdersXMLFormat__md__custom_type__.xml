@@ -1,0 +1,497 @@
+<custom__type__definition>
+  <version>5.2.0.0</version>
+  <typeName class="org.mule.common.metadata.DefaultMetaDataKey">
+    <id>OrdersXMLFormat</id>
+    <displayName>OrdersXMLFormat</displayName>
+    <category>DEFAULT</category>
+    <metaDataKeyPropertiesManager>
+      <properties>
+        <org.mule.common.metadata.key.property.dsql.DsqlFromMetaDataKeyProperty/>
+      </properties>
+    </metaDataKeyPropertiesManager>
+  </typeName>
+  <metadataModel class="org.mule.common.metadata.DefaultXmlMetaDataModel">
+    <dataType>XML</dataType>
+    <metaDataModelPropertiesManager>
+      <properties>
+        <org.mule.common.metadata.property.xml.SchemaTypeMetaDataProperty>
+          <typeQName>
+            <namespaceURI></namespaceURI>
+            <localPart>OrdersType</localPart>
+            <prefix></prefix>
+          </typeQName>
+        </org.mule.common.metadata.property.xml.SchemaTypeMetaDataProperty>
+        <org.mule.common.metadata.property.TextBasedExampleMetaDataModelProperty>
+          <exampleContent>D:\Workspace\MeriDukan_V1.3_29122016\src\main\resources\Example\OrderXMLScehma.xml</exampleContent>
+        </org.mule.common.metadata.property.TextBasedExampleMetaDataModelProperty>
+        <org.mule.tooling.metadata.properties.DefinitionEditorModeType>
+          <mode>EXAMPLE</mode>
+          <path>src\main\resources\Example\OrderXMLScehma.xml</path>
+          <rootElement>Orders</rootElement>
+        </org.mule.tooling.metadata.properties.DefinitionEditorModeType>
+      </properties>
+    </metaDataModelPropertiesManager>
+    <fields>
+      <org.mule.common.metadata.DefaultMetaDataField>
+        <name>Order</name>
+        <model class="org.mule.common.metadata.DefaultListMetaDataModel">
+          <dataType>LIST</dataType>
+          <metaDataModelPropertiesManager>
+            <properties>
+              <org.mule.common.metadata.property.xml.SchemaTypeMetaDataProperty>
+                <typeQName>
+                  <namespaceURI></namespaceURI>
+                  <localPart>OrderType</localPart>
+                  <prefix></prefix>
+                </typeQName>
+              </org.mule.common.metadata.property.xml.SchemaTypeMetaDataProperty>
+              <org.mule.common.metadata.property.xml.UnboundMetaDataProperty>
+                <maxOccurs>2147483647</maxOccurs>
+                <minOccurs>0</minOccurs>
+              </org.mule.common.metadata.property.xml.UnboundMetaDataProperty>
+            </properties>
+          </metaDataModelPropertiesManager>
+          <model class="org.mule.common.metadata.DefaultXmlMetaDataModel">
+            <dataType>XML</dataType>
+            <metaDataModelPropertiesManager>
+              <properties/>
+            </metaDataModelPropertiesManager>
+            <fields>
+              <org.mule.common.metadata.DefaultMetaDataField>
+                <name>orderDate</name>
+                <model class="org.mule.common.metadata.DefaultSimpleMetaDataModel">
+                  <dataType>DATE</dataType>
+                  <metaDataModelPropertiesManager>
+                    <properties/>
+                  </metaDataModelPropertiesManager>
+                </model>
+                <accessType>READ_WRITE</accessType>
+                <metaDataFieldPropertyManager>
+                  <properties>
+                    <org.mule.common.metadata.property.QNameMetaDataProperty>
+                      <name>
+                        <namespaceURI></namespaceURI>
+                        <localPart>orderDate</localPart>
+                        <prefix></prefix>
+                      </name>
+                    </org.mule.common.metadata.property.QNameMetaDataProperty>
+                  </properties>
+                </metaDataFieldPropertyManager>
+              </org.mule.common.metadata.DefaultMetaDataField>
+              <org.mule.common.metadata.DefaultMetaDataField>
+                <name>requiredDate</name>
+                <model class="org.mule.common.metadata.DefaultSimpleMetaDataModel">
+                  <dataType>DATE</dataType>
+                  <metaDataModelPropertiesManager>
+                    <properties/>
+                  </metaDataModelPropertiesManager>
+                </model>
+                <accessType>READ_WRITE</accessType>
+                <metaDataFieldPropertyManager>
+                  <properties>
+                    <org.mule.common.metadata.property.QNameMetaDataProperty>
+                      <name>
+                        <namespaceURI></namespaceURI>
+                        <localPart>requiredDate</localPart>
+                        <prefix></prefix>
+                      </name>
+                    </org.mule.common.metadata.property.QNameMetaDataProperty>
+                  </properties>
+                </metaDataFieldPropertyManager>
+              </org.mule.common.metadata.DefaultMetaDataField>
+              <org.mule.common.metadata.DefaultMetaDataField>
+                <name>shippedDate</name>
+                <model class="org.mule.common.metadata.DefaultSimpleMetaDataModel">
+                  <dataType>DATE</dataType>
+                  <metaDataModelPropertiesManager>
+                    <properties/>
+                  </metaDataModelPropertiesManager>
+                </model>
+                <accessType>READ_WRITE</accessType>
+                <metaDataFieldPropertyManager>
+                  <properties>
+                    <org.mule.common.metadata.property.QNameMetaDataProperty>
+                      <name>
+                        <namespaceURI></namespaceURI>
+                        <localPart>shippedDate</localPart>
+                        <prefix></prefix>
+                      </name>
+                    </org.mule.common.metadata.property.QNameMetaDataProperty>
+                  </properties>
+                </metaDataFieldPropertyManager>
+              </org.mule.common.metadata.DefaultMetaDataField>
+              <org.mule.common.metadata.DefaultMetaDataField>
+                <name>status</name>
+                <model class="org.mule.common.metadata.DefaultSimpleMetaDataModel">
+                  <dataType>STRING</dataType>
+                  <metaDataModelPropertiesManager>
+                    <properties>
+                      <org.mule.common.metadata.property.xml.SchemaTypeMetaDataProperty>
+                        <typeQName>
+                          <namespaceURI>http://www.w3.org/2001/XMLSchema</namespaceURI>
+                          <localPart>string</localPart>
+                          <prefix></prefix>
+                        </typeQName>
+                      </org.mule.common.metadata.property.xml.SchemaTypeMetaDataProperty>
+                    </properties>
+                  </metaDataModelPropertiesManager>
+                </model>
+                <accessType>READ_WRITE</accessType>
+                <metaDataFieldPropertyManager>
+                  <properties>
+                    <org.mule.common.metadata.property.QNameMetaDataProperty>
+                      <name>
+                        <namespaceURI></namespaceURI>
+                        <localPart>status</localPart>
+                        <prefix></prefix>
+                      </name>
+                    </org.mule.common.metadata.property.QNameMetaDataProperty>
+                  </properties>
+                </metaDataFieldPropertyManager>
+              </org.mule.common.metadata.DefaultMetaDataField>
+              <org.mule.common.metadata.DefaultMetaDataField>
+                <name>comments</name>
+                <model class="org.mule.common.metadata.DefaultSimpleMetaDataModel">
+                  <dataType>STRING</dataType>
+                  <metaDataModelPropertiesManager>
+                    <properties/>
+                  </metaDataModelPropertiesManager>
+                </model>
+                <accessType>READ_WRITE</accessType>
+                <metaDataFieldPropertyManager>
+                  <properties>
+                    <org.mule.common.metadata.property.QNameMetaDataProperty>
+                      <name>
+                        <namespaceURI></namespaceURI>
+                        <localPart>comments</localPart>
+                        <prefix></prefix>
+                      </name>
+                    </org.mule.common.metadata.property.QNameMetaDataProperty>
+                  </properties>
+                </metaDataFieldPropertyManager>
+              </org.mule.common.metadata.DefaultMetaDataField>
+              <org.mule.common.metadata.DefaultMetaDataField>
+                <name>customerNumber</name>
+                <model class="org.mule.common.metadata.DefaultSimpleMetaDataModel">
+                  <dataType>INTEGER</dataType>
+                  <metaDataModelPropertiesManager>
+                    <properties>
+                      <org.mule.common.metadata.property.xml.SchemaTypeMetaDataProperty>
+                        <typeQName>
+                          <namespaceURI>http://www.w3.org/2001/XMLSchema</namespaceURI>
+                          <localPart>byte</localPart>
+                          <prefix></prefix>
+                        </typeQName>
+                      </org.mule.common.metadata.property.xml.SchemaTypeMetaDataProperty>
+                    </properties>
+                  </metaDataModelPropertiesManager>
+                </model>
+                <accessType>READ_WRITE</accessType>
+                <metaDataFieldPropertyManager>
+                  <properties>
+                    <org.mule.common.metadata.property.QNameMetaDataProperty>
+                      <name>
+                        <namespaceURI></namespaceURI>
+                        <localPart>customerNumber</localPart>
+                        <prefix></prefix>
+                      </name>
+                    </org.mule.common.metadata.property.QNameMetaDataProperty>
+                  </properties>
+                </metaDataFieldPropertyManager>
+              </org.mule.common.metadata.DefaultMetaDataField>
+              <org.mule.common.metadata.DefaultMetaDataField>
+                <name>orderDetails</name>
+                <model class="org.mule.common.metadata.DefaultXmlMetaDataModel">
+                  <dataType>XML</dataType>
+                  <metaDataModelPropertiesManager>
+                    <properties>
+                      <org.mule.common.metadata.property.xml.SchemaTypeMetaDataProperty>
+                        <typeQName>
+                          <namespaceURI></namespaceURI>
+                          <localPart>orderDetailsType</localPart>
+                          <prefix></prefix>
+                        </typeQName>
+                      </org.mule.common.metadata.property.xml.SchemaTypeMetaDataProperty>
+                    </properties>
+                  </metaDataModelPropertiesManager>
+                  <fields>
+                    <org.mule.common.metadata.DefaultMetaDataField>
+                      <name>orderDetail</name>
+                      <model class="org.mule.common.metadata.DefaultListMetaDataModel">
+                        <dataType>LIST</dataType>
+                        <metaDataModelPropertiesManager>
+                          <properties>
+                            <org.mule.common.metadata.property.xml.SchemaTypeMetaDataProperty>
+                              <typeQName>
+                                <namespaceURI></namespaceURI>
+                                <localPart>orderDetailType</localPart>
+                                <prefix></prefix>
+                              </typeQName>
+                            </org.mule.common.metadata.property.xml.SchemaTypeMetaDataProperty>
+                            <org.mule.common.metadata.property.xml.UnboundMetaDataProperty>
+                              <maxOccurs>2147483647</maxOccurs>
+                              <minOccurs>0</minOccurs>
+                            </org.mule.common.metadata.property.xml.UnboundMetaDataProperty>
+                          </properties>
+                        </metaDataModelPropertiesManager>
+                        <model class="org.mule.common.metadata.DefaultXmlMetaDataModel">
+                          <dataType>XML</dataType>
+                          <metaDataModelPropertiesManager>
+                            <properties/>
+                          </metaDataModelPropertiesManager>
+                          <fields>
+                            <org.mule.common.metadata.DefaultMetaDataField>
+                              <name>productCode</name>
+                              <model class="org.mule.common.metadata.DefaultSimpleMetaDataModel">
+                                <dataType>STRING</dataType>
+                                <metaDataModelPropertiesManager>
+                                  <properties/>
+                                </metaDataModelPropertiesManager>
+                              </model>
+                              <accessType>READ_WRITE</accessType>
+                              <metaDataFieldPropertyManager>
+                                <properties>
+                                  <org.mule.common.metadata.property.QNameMetaDataProperty>
+                                    <name>
+                                      <namespaceURI></namespaceURI>
+                                      <localPart>productCode</localPart>
+                                      <prefix></prefix>
+                                    </name>
+                                  </org.mule.common.metadata.property.QNameMetaDataProperty>
+                                </properties>
+                              </metaDataFieldPropertyManager>
+                            </org.mule.common.metadata.DefaultMetaDataField>
+                            <org.mule.common.metadata.DefaultMetaDataField>
+                              <name>quantityOrdered</name>
+                              <model class="org.mule.common.metadata.DefaultSimpleMetaDataModel">
+                                <dataType>INTEGER</dataType>
+                                <metaDataModelPropertiesManager>
+                                  <properties/>
+                                </metaDataModelPropertiesManager>
+                              </model>
+                              <accessType>READ_WRITE</accessType>
+                              <metaDataFieldPropertyManager>
+                                <properties>
+                                  <org.mule.common.metadata.property.QNameMetaDataProperty>
+                                    <name>
+                                      <namespaceURI></namespaceURI>
+                                      <localPart>quantityOrdered</localPart>
+                                      <prefix></prefix>
+                                    </name>
+                                  </org.mule.common.metadata.property.QNameMetaDataProperty>
+                                </properties>
+                              </metaDataFieldPropertyManager>
+                            </org.mule.common.metadata.DefaultMetaDataField>
+                            <org.mule.common.metadata.DefaultMetaDataField>
+                              <name>priceEach</name>
+                              <model class="org.mule.common.metadata.DefaultSimpleMetaDataModel">
+                                <dataType>DOUBLE</dataType>
+                                <metaDataModelPropertiesManager>
+                                  <properties/>
+                                </metaDataModelPropertiesManager>
+                              </model>
+                              <accessType>READ_WRITE</accessType>
+                              <metaDataFieldPropertyManager>
+                                <properties>
+                                  <org.mule.common.metadata.property.QNameMetaDataProperty>
+                                    <name>
+                                      <namespaceURI></namespaceURI>
+                                      <localPart>priceEach</localPart>
+                                      <prefix></prefix>
+                                    </name>
+                                  </org.mule.common.metadata.property.QNameMetaDataProperty>
+                                </properties>
+                              </metaDataFieldPropertyManager>
+                            </org.mule.common.metadata.DefaultMetaDataField>
+                            <org.mule.common.metadata.DefaultMetaDataField>
+                              <name>orderLineNumber</name>
+                              <model class="org.mule.common.metadata.DefaultSimpleMetaDataModel">
+                                <dataType>INTEGER</dataType>
+                                <metaDataModelPropertiesManager>
+                                  <properties/>
+                                </metaDataModelPropertiesManager>
+                              </model>
+                              <accessType>READ_WRITE</accessType>
+                              <metaDataFieldPropertyManager>
+                                <properties>
+                                  <org.mule.common.metadata.property.QNameMetaDataProperty>
+                                    <name>
+                                      <namespaceURI></namespaceURI>
+                                      <localPart>orderLineNumber</localPart>
+                                      <prefix></prefix>
+                                    </name>
+                                  </org.mule.common.metadata.property.QNameMetaDataProperty>
+                                </properties>
+                              </metaDataFieldPropertyManager>
+                            </org.mule.common.metadata.DefaultMetaDataField>
+                          </fields>
+                          <rootElement>
+                            <namespaceURI></namespaceURI>
+                            <localPart>Orders</localPart>
+                            <prefix></prefix>
+                          </rootElement>
+                          <schemas class="org.mule.common.metadata.StringBasedSchemaProvider">
+                            <schemas>
+                              <string>&lt;xs:schema attributeFormDefault=&quot;unqualified&quot; elementFormDefault=&quot;qualified&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;&#xd;
+  &lt;xs:element name=&quot;Orders&quot; type=&quot;OrdersType&quot;/&gt;&#xd;
+  &lt;xs:complexType name=&quot;OrderType&quot;&gt;&#xd;
+    &lt;xs:sequence&gt;&#xd;
+      &lt;xs:element name=&quot;orderDate&quot;&gt;&#xd;
+        &lt;xs:simpleType&gt;&#xd;
+          &lt;xs:restriction base=&quot;xs:date&quot;&gt;&#xd;
+            &lt;xs:enumeration value=&quot;2016-12-31&quot;/&gt;&#xd;
+            &lt;xs:enumeration value=&quot;2016-12-30&quot;/&gt;&#xd;
+          &lt;/xs:restriction&gt;&#xd;
+        &lt;/xs:simpleType&gt;&#xd;
+      &lt;/xs:element&gt;&#xd;
+      &lt;xs:element name=&quot;requiredDate&quot;&gt;&#xd;
+        &lt;xs:simpleType&gt;&#xd;
+          &lt;xs:restriction base=&quot;xs:date&quot;&gt;&#xd;
+            &lt;xs:enumeration value=&quot;2016-12-31&quot;/&gt;&#xd;
+            &lt;xs:enumeration value=&quot;2016-12-30&quot;/&gt;&#xd;
+          &lt;/xs:restriction&gt;&#xd;
+        &lt;/xs:simpleType&gt;&#xd;
+      &lt;/xs:element&gt;&#xd;
+      &lt;xs:element name=&quot;shippedDate&quot;&gt;&#xd;
+        &lt;xs:simpleType&gt;&#xd;
+          &lt;xs:restriction base=&quot;xs:date&quot;&gt;&#xd;
+            &lt;xs:enumeration value=&quot;2016-12-31&quot;/&gt;&#xd;
+            &lt;xs:enumeration value=&quot;2016-12-30&quot;/&gt;&#xd;
+          &lt;/xs:restriction&gt;&#xd;
+        &lt;/xs:simpleType&gt;&#xd;
+      &lt;/xs:element&gt;&#xd;
+      &lt;xs:element type=&quot;xs:string&quot; name=&quot;status&quot;/&gt;&#xd;
+      &lt;xs:element name=&quot;comments&quot;&gt;&#xd;
+        &lt;xs:simpleType&gt;&#xd;
+          &lt;xs:restriction base=&quot;xs:string&quot;&gt;&#xd;
+            &lt;xs:enumeration value=&quot;Shipped will be on 31st DEC&quot;/&gt;&#xd;
+            &lt;xs:enumeration value=&quot;Shipped on 30th DEC&quot;/&gt;&#xd;
+          &lt;/xs:restriction&gt;&#xd;
+        &lt;/xs:simpleType&gt;&#xd;
+      &lt;/xs:element&gt;&#xd;
+      &lt;xs:element type=&quot;xs:byte&quot; name=&quot;customerNumber&quot;/&gt;&#xd;
+      &lt;xs:element type=&quot;orderDetailsType&quot; name=&quot;orderDetails&quot;/&gt;&#xd;
+    &lt;/xs:sequence&gt;&#xd;
+  &lt;/xs:complexType&gt;&#xd;
+  &lt;xs:complexType name=&quot;orderDetailsType&quot;&gt;&#xd;
+    &lt;xs:sequence&gt;&#xd;
+      &lt;xs:element type=&quot;orderDetailType&quot; name=&quot;orderDetail&quot; maxOccurs=&quot;unbounded&quot; minOccurs=&quot;0&quot;/&gt;&#xd;
+    &lt;/xs:sequence&gt;&#xd;
+  &lt;/xs:complexType&gt;&#xd;
+  &lt;xs:complexType name=&quot;orderDetailType&quot;&gt;&#xd;
+    &lt;xs:sequence&gt;&#xd;
+      &lt;xs:element name=&quot;productCode&quot;&gt;&#xd;
+        &lt;xs:simpleType&gt;&#xd;
+          &lt;xs:restriction base=&quot;xs:string&quot;&gt;&#xd;
+            &lt;xs:enumeration value=&quot;S10_1678&quot;/&gt;&#xd;
+            &lt;xs:enumeration value=&quot;S10_1980&quot;/&gt;&#xd;
+          &lt;/xs:restriction&gt;&#xd;
+        &lt;/xs:simpleType&gt;&#xd;
+      &lt;/xs:element&gt;&#xd;
+      &lt;xs:element name=&quot;quantityOrdered&quot;&gt;&#xd;
+        &lt;xs:simpleType&gt;&#xd;
+          &lt;xs:restriction base=&quot;xs:byte&quot;&gt;&#xd;
+            &lt;xs:enumeration value=&quot;10&quot;/&gt;&#xd;
+            &lt;xs:enumeration value=&quot;20&quot;/&gt;&#xd;
+            &lt;xs:enumeration value=&quot;30&quot;/&gt;&#xd;
+            &lt;xs:enumeration value=&quot;40&quot;/&gt;&#xd;
+          &lt;/xs:restriction&gt;&#xd;
+        &lt;/xs:simpleType&gt;&#xd;
+      &lt;/xs:element&gt;&#xd;
+      &lt;xs:element name=&quot;priceEach&quot;&gt;&#xd;
+        &lt;xs:simpleType&gt;&#xd;
+          &lt;xs:restriction base=&quot;xs:float&quot;&gt;&#xd;
+            &lt;xs:enumeration value=&quot;10.88&quot;/&gt;&#xd;
+            &lt;xs:enumeration value=&quot;20.88&quot;/&gt;&#xd;
+            &lt;xs:enumeration value=&quot;30.88&quot;/&gt;&#xd;
+            &lt;xs:enumeration value=&quot;40.88&quot;/&gt;&#xd;
+          &lt;/xs:restriction&gt;&#xd;
+        &lt;/xs:simpleType&gt;&#xd;
+      &lt;/xs:element&gt;&#xd;
+      &lt;xs:element name=&quot;orderLineNumber&quot;&gt;&#xd;
+        &lt;xs:simpleType&gt;&#xd;
+          &lt;xs:restriction base=&quot;xs:short&quot;&gt;&#xd;
+            &lt;xs:enumeration value=&quot;100&quot;/&gt;&#xd;
+            &lt;xs:enumeration value=&quot;200&quot;/&gt;&#xd;
+            &lt;xs:enumeration value=&quot;300&quot;/&gt;&#xd;
+            &lt;xs:enumeration value=&quot;400&quot;/&gt;&#xd;
+          &lt;/xs:restriction&gt;&#xd;
+        &lt;/xs:simpleType&gt;&#xd;
+      &lt;/xs:element&gt;&#xd;
+    &lt;/xs:sequence&gt;&#xd;
+  &lt;/xs:complexType&gt;&#xd;
+  &lt;xs:complexType name=&quot;OrdersType&quot;&gt;&#xd;
+    &lt;xs:sequence&gt;&#xd;
+      &lt;xs:element type=&quot;OrderType&quot; name=&quot;Order&quot; maxOccurs=&quot;unbounded&quot; minOccurs=&quot;0&quot;/&gt;&#xd;
+    &lt;/xs:sequence&gt;&#xd;
+  &lt;/xs:complexType&gt;&#xd;
+&lt;/xs:schema&gt;</string>
+                            </schemas>
+                            <encoding>UTF-8</encoding>
+                          </schemas>
+                          <namespaceManager>
+                            <namespacePrefix/>
+                          </namespaceManager>
+                        </model>
+                        <isArray>false</isArray>
+                      </model>
+                      <accessType>READ_WRITE</accessType>
+                      <metaDataFieldPropertyManager>
+                        <properties>
+                          <org.mule.common.metadata.property.QNameMetaDataProperty>
+                            <name>
+                              <namespaceURI></namespaceURI>
+                              <localPart>orderDetail</localPart>
+                              <prefix></prefix>
+                            </name>
+                          </org.mule.common.metadata.property.QNameMetaDataProperty>
+                        </properties>
+                      </metaDataFieldPropertyManager>
+                    </org.mule.common.metadata.DefaultMetaDataField>
+                  </fields>
+                  <rootElement reference="../fields/org.mule.common.metadata.DefaultMetaDataField/model/model/rootElement"/>
+                  <schemas class="org.mule.common.metadata.StringBasedSchemaProvider" reference="../fields/org.mule.common.metadata.DefaultMetaDataField/model/model/schemas"/>
+                  <namespaceManager reference="../fields/org.mule.common.metadata.DefaultMetaDataField/model/model/namespaceManager"/>
+                </model>
+                <accessType>READ_WRITE</accessType>
+                <metaDataFieldPropertyManager>
+                  <properties>
+                    <org.mule.common.metadata.property.QNameMetaDataProperty>
+                      <name>
+                        <namespaceURI></namespaceURI>
+                        <localPart>orderDetails</localPart>
+                        <prefix></prefix>
+                      </name>
+                    </org.mule.common.metadata.property.QNameMetaDataProperty>
+                  </properties>
+                </metaDataFieldPropertyManager>
+              </org.mule.common.metadata.DefaultMetaDataField>
+            </fields>
+            <rootElement reference="../fields/org.mule.common.metadata.DefaultMetaDataField[7]/model/fields/org.mule.common.metadata.DefaultMetaDataField/model/model/rootElement"/>
+            <schemas class="org.mule.common.metadata.StringBasedSchemaProvider" reference="../fields/org.mule.common.metadata.DefaultMetaDataField[7]/model/fields/org.mule.common.metadata.DefaultMetaDataField/model/model/schemas"/>
+            <namespaceManager reference="../fields/org.mule.common.metadata.DefaultMetaDataField[7]/model/fields/org.mule.common.metadata.DefaultMetaDataField/model/model/namespaceManager"/>
+          </model>
+          <isArray>false</isArray>
+        </model>
+        <accessType>READ_WRITE</accessType>
+        <metaDataFieldPropertyManager>
+          <properties>
+            <org.mule.common.metadata.property.QNameMetaDataProperty>
+              <name>
+                <namespaceURI></namespaceURI>
+                <localPart>Order</localPart>
+                <prefix></prefix>
+              </name>
+            </org.mule.common.metadata.property.QNameMetaDataProperty>
+          </properties>
+        </metaDataFieldPropertyManager>
+      </org.mule.common.metadata.DefaultMetaDataField>
+    </fields>
+    <rootElement reference="../fields/org.mule.common.metadata.DefaultMetaDataField/model/model/fields/org.mule.common.metadata.DefaultMetaDataField[7]/model/fields/org.mule.common.metadata.DefaultMetaDataField/model/model/rootElement"/>
+    <schemas class="org.mule.common.metadata.StringBasedSchemaProvider">
+      <schemas reference="../../fields/org.mule.common.metadata.DefaultMetaDataField/model/model/fields/org.mule.common.metadata.DefaultMetaDataField[7]/model/fields/org.mule.common.metadata.DefaultMetaDataField/model/model/schemas/schemas"/>
+      <encoding reference="../../fields/org.mule.common.metadata.DefaultMetaDataField/model/model/fields/org.mule.common.metadata.DefaultMetaDataField[7]/model/fields/org.mule.common.metadata.DefaultMetaDataField/model/model/schemas/encoding"/>
+    </schemas>
+    <namespaceManager reference="../fields/org.mule.common.metadata.DefaultMetaDataField/model/model/fields/org.mule.common.metadata.DefaultMetaDataField[7]/model/fields/org.mule.common.metadata.DefaultMetaDataField/model/model/namespaceManager"/>
+  </metadataModel>
+</custom__type__definition>

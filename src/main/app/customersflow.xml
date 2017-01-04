@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata"
+	xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+
+	<flow name="getAllcustomersflow">
+		<db:select config-ref="MySQL_Configuration" doc:name="Database">
+			<db:parameterized-query><![CDATA[select customerNumber,customerName,contactLastName,contactFirstName,phone,addressLine1,addressLine2,city,state,postalCode,country,salesRepEmployeeNumber,creditLimit from customers where deleteStatus=1 order by customerNumber;]]></db:parameterized-query>
+		</db:select>
+		<json:object-to-json-transformer
+			doc:name="Object to JSON" />
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((payload.length()>2) ? payload :"No customer found!!")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;getAllcustomersflow&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+
+    <flow name="InsertCustomerFlow">
+		<dw:transform-message doc:name="Transform Message"
+			metadata:id="0993c166-4c6a-4753-896c-f513eaddbde4">
+			<dw:input-payload doc:sample="sample_data\json.json" />
+			<dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	customerName: payload.customerName,
+	contactLastName: payload.contactLastName,
+	contactFirstName: payload.contactFirstName,
+	phone: payload.phone,
+	addressLine1: payload.addressLine1,
+	addressLine2: payload.addressLine2,
+	city: payload.city,
+	state: payload.state,
+	postalCode: payload.postalCode,
+	country: payload.country,
+	creditLimit: payload.creditLimit,
+	salesRepEmployeeNumber: payload.salesRepEmployeeNumber
+}]]></dw:set-payload>
+		</dw:transform-message>
+		<logger
+			message="insert into `customers` (`customerName`, `contactLastName`, `contactFirstName`, `phone`, `addressLine1`, `addressLine2`, `city`, `state`,`postalCode`,`country`,`creditLimit`,`salesRepEmployeeNumber`,`deleteStatus`)values(#[payload.customerName],#[payload.contactLastName],#[payload.contactFirstName],#[payload.phone],#[payload.addressLine1],#[payload.addressLine2],#[payload.city],#[payload.state],#[payload.postalCode],#[payload.country],#[payload.creditLimit],#[payload.salesRepEmployeeNumber],1)"
+			level="INFO" doc:name="Logger" />
+
+		<db:insert config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[insert into `customers` (`customerName`, `contactLastName`, `contactFirstName`, `phone`, `addressLine1`, `addressLine2`, `city`, `state`,`postalCode`,`country`,`creditLimit`,`salesRepEmployeeNumber`,`deleteStatus`)
+values
+(#[payload.customerName],#[payload.contactLastName],#[payload.contactFirstName],#[payload.phone],#[payload.addressLine1],#[payload.addressLine2],#[payload.city],#[payload.state],#[payload.postalCode],#[payload.country],#[payload.creditLimit],#[payload.salesRepEmployeeNumber],1)]]></db:parameterized-query>
+
+		</db:insert>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((payload >0) ? "Customer has been posted successfully" :"Customer has not been posted successfully" )]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;addCustomerFlow&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+	
+	
+	<flow name="addCustomersFlow">
+		<choice doc:name="Choice">
+			<when
+				expression="#[message.inboundProperties['Content-Type'].equals(&quot;application/xml&quot;)]">
+				<dw:transform-message metadata:id="0d915429-9d69-49a1-b967-a84aa803121b"
+					doc:name="Transform Message">
+					<dw:input-payload doc:sample="sample_data\Customers.xml"
+						mimeType="application/xml" />
+					<dw:set-payload resource="classpath:CustomerXMLTOJSON.dwl" />
+				</dw:transform-message>
+			</when>
+			<when
+				expression="#[message.inboundProperties['Content-Type'].equals(&quot;application/json&quot;)]">
+				<dw:transform-message metadata:id="46897b77-5794-42c5-a4c4-4de046b0871b"
+					doc:name="Transform Message">
+					<dw:input-payload doc:sample="ExampleFile\CustomerJSONSchema.json"
+						mimeType="application/json" />
+					<dw:set-payload resource="classpath:CustomerJSONToJSON.dwl" />
+				</dw:transform-message>
+			</when>
+			<otherwise>
+				<set-payload value="Only XML and JSON Data Accepted........"
+					doc:name="Set Payload" />
+			</otherwise>
+		</choice>
+		<foreach collection="#[payload]" doc:name="For Each">
+			<json:object-to-json-transformer
+				doc:name="Object to JSON" />
+			<flow-ref name="InsertCustomerFlow" doc:name="InsertCustomerFlow" />
+		</foreach>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((payload.size()>0) ? "Customer has been posted successfully" :"Customer has not been posted successfully" )]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<choice-exception-strategy doc:name="Choice Exception Strategy">
+			<catch-exception-strategy doc:name="SQL Exception"
+				when="exception.causedBy(java.sql.SQLException)">
+				<set-payload value="SQL Exception raised in addCustomersFlow!!!!"
+					doc:name="Set Payload" />
+			</catch-exception-strategy>
+			<catch-exception-strategy doc:name="Catch All Exceptions">
+				<set-payload
+					value="Exception rasied in &quot;addCustomersFlow&quot; flow !!!!!!"
+					doc:name="Set Payload" />
+			</catch-exception-strategy>
+		</choice-exception-strategy>
+	</flow>
+	
+	
+	<flow name="getcustomersByID">
+		<logger message="#[message.inboundProperties.'http.uri.params'.customerid]"
+			level="INFO" doc:name="Logger" />
+		<set-variable variableName="CustomerID"
+			value="#[message.inboundProperties.'http.uri.params'.customerid]"
+			doc:name="Variable" />
+		<db:select config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[select customerName,phone,addressLine1,addressLine2,contactFirstName,contactLastName,postalCode,city,state,country,creditLimit,salesRepEmployeeNumber from customers where customerNumber=#[flowVars.CustomerID] AND deleteStatus=1]]></db:parameterized-query>
+
+		</db:select>
+		<json:object-to-json-transformer
+			doc:name="Object to JSON" />
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((payload.length()>2) ? payload : "Customer ID:"+flowVars.CustomerID+" does not exist")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;getcustomersByID&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+	
+	
+	<flow name="updateCustometByID">
+		<set-variable variableName="CustomerID"
+			value="#[message.inboundProperties.'http.uri.params'.customerid]"
+			doc:name="Variable" />
+		<dw:transform-message metadata:id="0993c166-4c6a-4753-896c-f513eaddbde4"
+			doc:name="Transform Message">
+			<dw:input-payload doc:sample="sample_data\json_1.json" mimeType="application/json"/>
+			<dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	customerName: payload.customerName,
+	contactLastName: payload.contactLastName,
+	contactFirstName: payload.contactFirstName,
+	phone: payload.phone,
+	addressLine1: payload.addressLine1,
+	addressLine2: payload.addressLine2,
+	city: payload.city,
+	state: payload.state,
+	postalCode: payload.postalCode,
+	country: payload.country,
+	creditLimit: payload.creditLimit,
+	salesRepEmployeeNumber: payload.salesRepEmployeeNumber
+}]]></dw:set-payload>
+		</dw:transform-message>
+		<logger
+			message="update `customers` set `customerName`=#[payload.customerName], `contactLastName`=#[payload.contactLastName], `contactFirstName`=#[payload.contactFirstName], `phone`=#[payload.phone], `addressLine1`=#[payload.addressLine1], `addressLine2`=#[payload.addressLine2], `city`=#[payload.city], `state`=#[payload.state],`postalCode`=#[payload.postalCode],`country`=#[payload.country]where `customerNumber`=#[flowVars.CustomerID]"
+			level="INFO" doc:name="Logger" />
+		<db:update config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[update `customers` set `customerName`=#[payload.customerName], `contactLastName`=#[payload.contactLastName], `contactFirstName`=#[payload.contactFirstName], `phone`=#[payload.phone], `addressLine1`=#[payload.addressLine1], `addressLine2`=#[payload.addressLine2], `city`=#[payload.city], `state`=#[payload.state],`postalCode`=#[payload.postalCode],`country`=#[payload.country],`creditLimit` =#[payload.creditLimit],`salesRepEmployeeNumber`=#[payload.salesRepEmployeeNumber]
+where `customerNumber`=#[flowVars.CustomerID]]]></db:parameterized-query>
+
+		</db:update>
+        <logger message="I m in logger :- ----------------------------------------#[payload]" level="INFO" doc:name="Logger"/>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=(payload!=0  ? "Customer ID:"+flowVars.CustomerID+" has been updated":"Customer ID:"+flowVars.CustomerID+" does not exist")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;updateCustometByID&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+	
+	<flow name="deleteCustomerByID">
+		<set-variable variableName="CustomerID"
+			value="#[message.inboundProperties.'http.uri.params'.customerid]"
+			doc:name="Variable" />
+		<db:update config-ref="MySQL_Configuration" doc:name="Database">
+            <db:parameterized-query><![CDATA[update customers set deletestatus=0 where customerNumber=#[flowVars.CustomerID]]]></db:parameterized-query>
+
+		</db:update>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=(payload !=0 ? "Customer ID:"+flowVars.CustomerID+" has been deleted":"Customer ID:"+flowVars.CustomerID+" does not exist")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;deleteCustomerByID&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+</mule>

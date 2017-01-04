@@ -1,0 +1,46 @@
+<Orders>
+  <Order>
+    <orderDate>2016-12-31</orderDate>
+	<requiredDate>2016-12-31</requiredDate>
+	<shippedDate>2016-12-31</shippedDate>
+	<status>Shipped</status>
+	<comments>Shipped will be on 31st DEC</comments>
+	<customerNumber>103</customerNumber>
+	<orderDetails>
+	   <orderDetail>
+	     <productCode>S10_1678</productCode>
+		 <quantityOrdered>10</quantityOrdered>
+		 <priceEach>10.88</priceEach>
+		 <orderLineNumber>100</orderLineNumber>
+	   </orderDetail>
+	   <orderDetail>
+	     <productCode>S10_1980</productCode>
+		 <quantityOrdered>20</quantityOrdered>
+		 <priceEach>20.88</priceEach>
+		 <orderLineNumber>200</orderLineNumber>
+	   </orderDetail>
+	</orderDetails>
+   </Order>
+    <Order>
+    <orderDate>2016-12-30</orderDate>
+	<requiredDate>2016-12-30</requiredDate>
+	<shippedDate>2016-12-30</shippedDate>
+	<status>Shipped</status>
+	<comments>Shipped on 30th DEC</comments>
+	<customerNumber>103</customerNumber>
+	<orderDetails>
+	   <orderDetail>
+	     <productCode>S10_1678</productCode>
+		 <quantityOrdered>30</quantityOrdered>
+		 <priceEach>30.88</priceEach>
+		 <orderLineNumber>300</orderLineNumber>
+	   </orderDetail>
+	   <orderDetail>
+	     <productCode>S10_1980</productCode>
+		 <quantityOrdered>40</quantityOrdered>
+		 <priceEach>40.88</priceEach>
+		 <orderLineNumber>400</orderLineNumber>
+	   </orderDetail>
+	</orderDetails>
+   </Order>
+</Orders>

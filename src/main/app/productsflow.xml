@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+
+	<flow name="getAllProducts">
+		<db:select config-ref="MySQL_Configuration" doc:name="Database">
+			<db:parameterized-query><![CDATA[select productCode,productName,productLine,productScale,productVendor,productDescription,quantityInStock,buyPrice,MSRP from products where deleteStatus=1;]]></db:parameterized-query>
+		</db:select>
+		<json:object-to-json-transformer
+			doc:name="Object to JSON" />
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((payload.length()>2) ? payload :"No record found!!")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;getAllProducts&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+
+
+	<flow name="getProductById">
+		<set-variable variableName="productCode"
+			value="#[message.inboundProperties.'http.uri.params'.productCode]"
+			doc:name="Set Product Code" />
+		<db:select config-ref="MySQL_Configuration" doc:name="Database">
+            <db:dynamic-query><![CDATA[select productCode,productName,productLine,productScale,productVendor,productDescription,quantityInStock,buyPrice,MSRP from products where (productCode = '#[flowVars.productCode]' AND deleteStatus=1);]]></db:dynamic-query>
+		</db:select>
+		<json:object-to-json-transformer
+			doc:name="Object to JSON" />
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((payload.length()>2) ? payload : "Product Code:"+flowVars.productCode+" does not exist")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;getProductById&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+
+<flow name="insertProduct">
+		<json:json-to-object-transformer
+			returnClass="java.util.HashMap" doc:name="JSON to Object" />
+        <logger message="INSERT INTO products (productCode,productName,productLine,productScale, productVendor, productDescription, quantityInStock,buyPrice,MSRP,deleteStatus) VALUES ( '#[payload.productCode]', '#[payload.productName]', '#[payload.productLine]', '#[payload.productScale]', '#[payload.productVendor]', '#[payload.productDescription]', #[payload.quantityInStock], #[payload.buyPrice], #[payload.MSRP],1);" level="INFO" doc:name="Logger"/>
+		<db:insert config-ref="MySQL_Configuration" doc:name="Database">
+            <db:dynamic-query><![CDATA[INSERT INTO products (productCode,productName,productLine,productScale, productVendor, productDescription, quantityInStock,buyPrice,MSRP,deleteStatus) VALUES ( '#[payload.productCode]', '#[payload.productName]', '#[payload.productLine]', '#[payload.productScale]', '#[payload.productVendor]', '#[payload.productDescription]', #[payload.quantityInStock], #[payload.buyPrice], #[payload.MSRP],1);]]></db:dynamic-query>
+		</db:insert>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((payload!=0) ? "Product has been posted successfully" :"Product has not been posted successfully" )]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+            <logger message="Exception rasied in &quot;insertProduct&quot; flow !!!!!!" level="INFO" doc:name="Logger"/>
+			<set-payload
+				value="Exception rasied in &quot;insertProduct&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+
+
+<flow name="addProductsFlow" processingStrategy="synchronous">
+		<choice doc:name="Choice" tracking:enable-default-events="true">
+			<when
+				expression="#[message.inboundProperties['Content-Type'].equals(&quot;application/xml&quot;)]">
+				<dw:transform-message metadata:id="11d67d6f-efa8-4b90-8795-3d68f210590c"
+					doc:name="Transform Message">
+					<dw:input-payload doc:sample="schema\Product.xml"
+						mimeType="application/xml" />
+					<dw:set-payload resource="classpath:ProductXMLToJSON.dwl" />
+				</dw:transform-message>
+			</when>
+			<when
+				expression="#[message.inboundProperties['Content-Type'].equals(&quot;application/json&quot;)]">
+				<dw:transform-message metadata:id="39c287a1-a74a-49cf-96d7-ae5227f2a2b9"
+					doc:name="Transform Message">
+					<dw:input-payload doc:sample="schema\Product.json"
+						mimeType="application/json" />
+					<dw:set-payload resource="classpath:ProductJSONToJSON.dwl" />
+				</dw:transform-message>
+			</when>
+			<otherwise>
+				<logger message="Only XML and JSON accepted......." level="INFO"
+					doc:name="Logger" />
+			</otherwise>
+		</choice>
+		<foreach collection="#[payload]" doc:name="For Each">
+			<set-session-variable variableName="productID"
+				value="#[payload.productCode]" doc:name="Set ProductCode in Session" />
+			<json:object-to-json-transformer
+				doc:name="Object to JSON" />
+			<flow-ref name="insertProduct" doc:name="insertProduct" />
+		</foreach>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=((payload.size()>0) ? "Product has been posted successfully" :"Product has not been posted successfully" )]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<choice-exception-strategy doc:name="Choice Exception Strategy">
+			<catch-exception-strategy
+				doc:name="MySQL Integrity Constraint Violation Exception"
+				when="exception.causedBy(com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException)">
+				<set-payload
+					value="Duplicate entry for ProductCode as PrimaryKey: #[sessionVars.productID].All the records got process before #[sessionVars.productID] and would not be processed the record after #[sessionVars.productID] in the given input"
+					doc:name="Set Payload" />
+			</catch-exception-strategy>
+			<catch-exception-strategy doc:name="Catch All Exceptions">
+				<set-payload value="Exception rasied in &quot;addProductsFlow&quot; !!!!!"
+					doc:name="Set Payload" />
+			</catch-exception-strategy>
+		</choice-exception-strategy>
+
+	</flow>
+
+
+	<flow name="updateProductById">
+		<json:json-to-object-transformer
+			returnClass="java.util.HashMap" doc:name="JSON to Object" />
+		<set-variable variableName="productCode"
+			value="#[message.inboundProperties.'http.uri.params'.productCode]"
+			doc:name="Set Product Code" />
+		<db:update config-ref="MySQL_Configuration" doc:name="Database">
+            <db:dynamic-query><![CDATA[UPDATE products SET productName = '#[payload.productName]', productLine = '#[payload.productLine]', productScale = '#[payload.productScale]', productVendor = '#[payload.productVendor]', productDescription = '#[payload.productDescription]', quantityInStock = #[payload.quantityInStock], buyPrice = #[payload.buyPrice], MSRP = '#[payload.MSRP]'
+WHERE productCode= '#[flowVars.productCode]';]]></db:dynamic-query>
+		</db:update>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=(payload!=0  ? "Product with Product Code:"+flowVars.productCode+" has been updated":"Product Code:"+flowVars.productCode+" does not exist")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;updateProductById&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+
+
+	<flow name="deleteProductsById">
+        <set-variable variableName="productID" value="#[message.inboundProperties.'http.uri.params'.productCode]" doc:name="Set Product Code"/>
+		<db:update config-ref="MySQL_Configuration" doc:name="Database">
+            <db:dynamic-query><![CDATA[update products set deleteStatus=0 where productCode='#[flowVars.productID]';]]></db:dynamic-query>
+		</db:update>
+		<expression-component doc:name="Expression"><![CDATA[#[flowVars.msg=(payload!=0 ? "Product with Product Code:"+flowVars.productID+" has been deleted":"Product Code:"+flowVars.productID+" does not exist")]]]></expression-component>
+		<set-payload value="#[flowVars.msg]" doc:name="Set Payload" />
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<set-payload
+				value="Exception rasied in &quot;deleteProductsById&quot; flow !!!!!!"
+				doc:name="Set Payload" />
+		</catch-exception-strategy>
+	</flow>
+	
+	<flow name="FileUpload" initialState="started">
+        <set-payload value="#[message.inboundAttachments]" doc:name="Retrieve Attachments"/>
+        <foreach doc:name="For Each">
+            <set-payload value="#[payload.getInputStream() ]" doc:name="Get Inputstream from Payload"/>
+            <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+            <set-variable variableName="fileData" value="#[message.payload]" doc:name="Variable"/>
+            <logger message="Message in side foe each :: #[payload]" level="INFO" doc:name="Logger"/>
+        </foreach>
+        <set-payload value="#[flowVars.fileData]" encoding="UTF-8" mimeType="text/csv" doc:name="Set Payload"/>
+        <batch:execute name="muleutilBatch" doc:name="muleutilBatch"/>
+
+	</flow> 
+	
+	<flow name="ReadLineByLine" initialState="started">
+        <file:inbound-endpoint path="src/main/resources/Input" moveToDirectory="src/main/resources/Output" responseTimeout="10000" doc:name="File"/>
+        <file:file-to-string-transformer doc:name="File to String"/>
+        <batch:execute name="muleutilBatch" doc:name="muleutilBatch"/>
+</flow>
+
+<batch:job name="muleutilBatch">
+    <batch:input>
+            <set-variable variableName="Header" value="#[message.payload.substring(0,message.payload.indexOf('\n')+1)]" doc:name="Header"/>
+            <set-payload value="#[message.payload.replace(flowVars.Header,&quot;&quot;).trim()] " doc:name="Remove Header"/>
+
+            <set-payload value="#[payload.split('\n')]" doc:name="Set Payload"/>
+
+    </batch:input>
+    <batch:process-records>
+        <batch:step name="Batch_Step">
+                <logger message="#[message.payload]" level="INFO" doc:name="Logger"/>
+                <batch:set-record-variable variableName="Code" value="#[payload.substring(0,message.payload.indexOf('|'))]" doc:name="Record Variable"/>
+                <dw:transform-message metadata:id="30f2c9a7-6752-428b-9342-388547bdef9c" doc:name="Transform Message">
+                    <dw:input-payload doc:sample="sample_data\list_csv_3.csv" mimeType="application/csv">
+                        <dw:reader-property name="header" value="false"/>
+                        <dw:reader-property name="separator" value="|"/>
+                    </dw:input-payload>
+                    <dw:set-payload resource="classpath:MeridukanV1.2_fileUpload.dwl"/>
+
+                    <dw:set-variable variableName="Customer"><![CDATA[%dw 1.0
+%output application/json skipNullOn="elements"
+---
+{
+	productCode: payload[0].column_1,
+	productName: payload[0].column_2,
+	productLine: payload[0].column_3,
+	productScale: payload[0].column_4,
+	productVendor: payload[0].column_5,
+	productDescription: payload[0].column_6,
+	quantityInStock: payload[0].column_7,
+	buyPrice:payload[0].column_8,	
+	MSRP:payload[0].column_9	
+	
+} when recordVars.Code=="Product"
+otherwise 
+
+{
+	customerName : payload[0].column_1,
+contactLastName : payload[0].column_2,
+contactFirstName : payload[0].column_3,
+phone : payload[0].column_4,
+addressLine1 :payload[0].column_5,
+addressLine2 :payload[0].column_6,
+city :payload[0].column_7,
+state :payload[0].column_8,
+postalCode :payload[0].column_9,
+country :payload[0].column_10,
+creditLimit :payload[0].column_11
+} when recordVars.Code=="Customer"
+otherwise
+ {
+ 	"Note":"Valid Inputs are Products or Customers"
+ }
+ 
+]]></dw:set-variable>
+                </dw:transform-message>
+                <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+
+                <json:object-to-json-transformer doc:name="Object to JSON"/>
+                <flow-ref name="insertProduct" doc:name="insertProduct"/>
+                <logger message="This is after Transformer #[payload]" level="INFO" doc:name="Logger"/>
+
+        </batch:step>
+    </batch:process-records>
+        <batch:on-complete>
+            <logger message="File Successfully Processed" level="INFO" doc:name="Logger"/>
+            <set-payload value="{&quot;Status&quot;:&quot;File Successfully processed&quot;}" doc:name="Set Payload"/>
+        </batch:on-complete>
+</batch:job>
+	
+</mule>
